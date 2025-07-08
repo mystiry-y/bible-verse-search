@@ -91,9 +91,6 @@ export default function Component() {
   // Search bar state
   const [searchInput, setSearchInput] = useState("");
   const [showFull, setShowFull] = useState(false);
-  const [searchResults, setSearchResults] = useState<Array<{book: string, chapter: string, verse: string, text: string}>>([]);
-  const [isSearching, setIsSearching] = useState(false);
-  const [showResults, setShowResults] = useState(false);
 
   // Fuzzy search and parse logic for search bar
   function handleVerseSearch(input: string) {
@@ -130,22 +127,8 @@ export default function Component() {
     setChapter(inputChapter);
     setVerse(inputVerse);
     setShowFull(true);
-    setShowResults(false);
     // Add to recent verses (avoid duplicates, most recent first)
     const ref = `${bestBook} ${inputChapter}:${inputVerse}`;
-    setRecentVerses(prev => [ref, ...prev.filter(v => v !== ref)].slice(0, 20));
-  }
-
-  // Handle search result selection
-  function handleResultSelect(result: {book: string, chapter: string, verse: string, text: string}) {
-    setBook(result.book);
-    setChapter(result.chapter);
-    setVerse(result.verse);
-    setShowFull(true);
-    setShowResults(false);
-    setSearchInput("");
-    // Add to recent verses
-    const ref = `${result.book} ${result.chapter}:${result.verse}`;
     setRecentVerses(prev => [ref, ...prev.filter(v => v !== ref)].slice(0, 20));
   }
 
@@ -240,96 +223,6 @@ export default function Component() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [showFull, bibleData, book, chapter, verse, books, chapters, verses]);
 
-  // Live search functionality with debouncing and fuzzy matching
-  useEffect(() => {
-    if (!bibleData || !searchInput.trim()) {
-      setSearchResults([]);
-      setShowResults(false);
-      setIsSearching(false);
-      return;
-    }
-
-    setIsSearching(true);
-    setShowResults(true);
-
-    // Debounce the search to avoid constant refreshing
-    const timeoutId = setTimeout(() => {
-      const searchTerm = searchInput.toLowerCase().trim();
-      const results: Array<{book: string, chapter: string, verse: string, text: string}> = [];
-
-      // Check if it looks like a verse reference (e.g., "John 3:16" or "john 3:16")
-      const verseReferenceMatch = searchTerm.match(/^(.+?)\s+(\d+):(\d+)$/);
-      
-      if (verseReferenceMatch) {
-        // Handle verse reference search with fuzzy book matching
-        const inputBook = verseReferenceMatch[1].trim();
-        const inputChapter = verseReferenceMatch[2];
-        const inputVerse = verseReferenceMatch[3];
-        
-        // Find best matching book using fuzzy search
-        let bestBook = books[0];
-        let minDist = levenshtein(inputBook, bestBook.toLowerCase());
-        for (const bookName of books) {
-          const dist = levenshtein(inputBook, bookName.toLowerCase());
-          if (dist < minDist) {
-            minDist = dist;
-            bestBook = bookName;
-          }
-        }
-        
-        // Check if the verse exists
-        if (bibleData[bestBook] && 
-            bibleData[bestBook][inputChapter] && 
-            bibleData[bestBook][inputChapter][inputVerse]) {
-          results.push({
-            book: bestBook,
-            chapter: inputChapter,
-            verse: inputVerse,
-            text: bibleData[bestBook][inputChapter][inputVerse]
-          });
-        }
-      } else {
-        // Handle general text search through all verses
-        for (const bookName of books) {
-          if (results.length >= 5) break;
-          
-          const bookData = bibleData[bookName];
-          for (const chapterNum of Object.keys(bookData)) {
-            if (results.length >= 5) break;
-            
-            const chapterData = bookData[chapterNum];
-            for (const verseNum of Object.keys(chapterData)) {
-              if (results.length >= 5) break;
-              
-              const verseText = chapterData[verseNum];
-              const reference = `${bookName} ${chapterNum}:${verseNum}`;
-              
-              // Check if search term matches reference, book name (with fuzzy), or verse text
-              const bookMatches = levenshtein(searchTerm, bookName.toLowerCase()) <= 2; // Allow up to 2 character differences
-              const referenceMatches = reference.toLowerCase().includes(searchTerm);
-              const textMatches = verseText.toLowerCase().includes(searchTerm);
-              
-              if (bookMatches || referenceMatches || textMatches) {
-                results.push({
-                  book: bookName,
-                  chapter: chapterNum,
-                  verse: verseNum,
-                  text: verseText
-                });
-              }
-            }
-          }
-        }
-      }
-
-      setSearchResults(results);
-      setIsSearching(false);
-    }, 150); // debounce time
-
-    // Cleanup timeout on dependency change
-    return () => clearTimeout(timeoutId);
-  }, [searchInput, bibleData]);
-
   const colorOptions = [
     { name: "Black", value: "#1f2937" },
     { name: "White", value: "#ffffff" },
@@ -359,7 +252,7 @@ export default function Component() {
         {/* Translation Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="text-gray-600 hover:text-gray-800">
+            <Button variant="ghost" style={{ color: textColor }} className="hover:text-gray-800">
               {TRANSLATIONS.find(t => t.value === translation)?.label}
               <ChevronDown className="ml-1 h-4 w-4" />
             </Button>
@@ -379,7 +272,7 @@ export default function Component() {
 
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="ghost" size="icon" className="text-gray-600 hover:text-gray-800">
+            <Button variant="ghost" size="icon" style={{ color: textColor }} className="hover:text-gray-800">
               <Settings className="h-5 w-5" />
             </Button>
           </DialogTrigger>
@@ -435,7 +328,8 @@ export default function Component() {
         <Button
           variant="ghost"
           size="icon"
-          className="text-gray-600 hover:text-gray-800"
+          style={{ color: textColor }}
+          className="hover:text-gray-800"
           onClick={() => {
             setPrevScreen('main');
             setShowHistory(true);
@@ -495,56 +389,9 @@ export default function Component() {
                 placeholder="Type book name, chapter, and verse..."
                 value={searchInput}
                 onChange={e => setSearchInput(e.target.value)}
-                onBlur={() => {
-                  // Delay hiding results to allow clicks
-                  setTimeout(() => setShowResults(false), 200);
-                }}
-                onFocus={() => {
-                  if (searchInput.trim()) setShowResults(true);
-                }}
               />
               <Button type="submit" className="mt-2 w-fit">Go</Button>
             </form>
-
-            {/* Search Results Dropdown */}
-            {showResults && (
-              <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-white border border-gray-300 rounded-md shadow-lg">
-                {isSearching ? (
-                  // Skeleton loading state
-                  <div className="p-2">
-                    {[1, 2, 3].map(i => (
-                      <div key={i} className="p-3 border-b border-gray-100 animate-pulse">
-                        <div className="h-4 bg-gray-200 rounded w-1/3 mb-2"></div>
-                        <div className="h-3 bg-gray-200 rounded w-full"></div>
-                      </div>
-                    ))}
-                  </div>
-                ) : searchResults.length === 0 ? (
-                  // No results
-                  <div className="p-4 text-center text-gray-500">
-                    No verses found matching "{searchInput}"
-                  </div>
-                ) : (
-                  // Results
-                  <div className="p-1">
-                    {searchResults.map((result, index) => (
-                      <button
-                        key={`${result.book}-${result.chapter}-${result.verse}`}
-                        className="w-full text-left p-3 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none border-b border-gray-100 last:border-b-0"
-                        onClick={() => handleResultSelect(result)}
-                      >
-                        <div className="font-medium text-purple-600 mb-1">
-                          {result.book} {result.chapter}:{result.verse}
-                        </div>
-                        <div className="text-sm text-gray-600 line-clamp-2">
-                          {result.text.length > 100 ? `${result.text.substring(0, 100)}...` : result.text}
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
           </div>
         </div>
 
@@ -671,7 +518,7 @@ export default function Component() {
               <div className="flex flex-row items-center gap-2 ml-auto pr-0" style={{ pointerEvents: 'auto' }}>
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button variant="ghost" size="icon" className="text-gray-600 hover:text-gray-800">
+                    <Button variant="ghost" size="icon" style={{ color: textColor }} className="hover:text-gray-800">
                       <Settings className="h-5 w-5" />
                     </Button>
                   </DialogTrigger>
@@ -724,7 +571,8 @@ export default function Component() {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="text-gray-600 hover:text-gray-800"
+                  style={{ color: textColor }}
+                  className="hover:text-gray-800"
                   onClick={() => {
                     setPrevScreen('fullscreen');
                     setShowHistory(true);
