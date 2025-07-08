@@ -117,6 +117,15 @@ export default function Component() {
         bestBook = b;
       }
     }
+    
+    // Validate that the verse exists before navigating
+    if (!bibleData[bestBook] || 
+        !bibleData[bestBook][inputChapter] || 
+        !bibleData[bestBook][inputChapter][inputVerse]) {
+      // Invalid verse - do not navigate
+      return;
+    }
+    
     setBook(bestBook);
     setChapter(inputChapter);
     setVerse(inputVerse);
