@@ -17,6 +17,7 @@ const TRANSLATIONS = [
   { label: "NIV", value: "NIV", file: () => import("./src/app/NIV/NIV_bible.json") },
   { label: "NKJV", value: "NKJV", file: () => import("./src/app/NKJV/NKJV_bible.json") },
   { label: "NLT", value: "NLT", file: () => import("./src/app/NLT/NLT_bible.json") },
+  { label: "RVR1960", value: "RVR1960", file: () => import("./src/app/RVR1960/RVR1960-Spanish.json") },
 ];
 
 
@@ -155,28 +156,85 @@ export default function Component() {
   const verses = book && chapter && bibleData && bibleData[book] && bibleData[book][chapter] ? Object.keys(bibleData[book][chapter]) : [];
   const verseText = book && chapter && verse && bibleData && bibleData[book] && bibleData[book][chapter] && bibleData[book][chapter][verse] ? bibleData[book][chapter][verse] : "";
 
+  // Keyboard navigation for verse view
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!showFull) return; // Only work in fullscreen mode
+      
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        // Move to previous verse
+        if (!bibleData || !book || !chapter || !verse) return;
+        let vIdx = verses.indexOf(verse);
+        let cIdx = chapters.indexOf(chapter);
+        let bIdx = books.indexOf(book);
+        if (vIdx > 0) {
+          setVerse(verses[vIdx - 1]);
+        } else if (cIdx > 0) {
+          const prevChapter = chapters[cIdx - 1];
+          const prevVerses = bibleData[book][prevChapter] ? Object.keys(bibleData[book][prevChapter]) : [];
+          setChapter(prevChapter);
+          setVerse(prevVerses[prevVerses.length - 1]);
+        } else if (bIdx > 0) {
+          const prevBook = books[bIdx - 1];
+          const prevChapters = bibleData[prevBook] ? Object.keys(bibleData[prevBook]) : [];
+          const lastChapter = prevChapters[prevChapters.length - 1];
+          const lastVerses = bibleData[prevBook][lastChapter] ? Object.keys(bibleData[prevBook][lastChapter]) : [];
+          setBook(prevBook);
+          setChapter(lastChapter);
+          setVerse(lastVerses[lastVerses.length - 1]);
+        }
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        // Move to next verse
+        if (!bibleData || !book || !chapter || !verse) return;
+        let vIdx = verses.indexOf(verse);
+        let cIdx = chapters.indexOf(chapter);
+        let bIdx = books.indexOf(book);
+        if (vIdx < verses.length - 1) {
+          setVerse(verses[vIdx + 1]);
+        } else if (cIdx < chapters.length - 1) {
+          const nextChapter = chapters[cIdx + 1];
+          const nextVerses = bibleData[book][nextChapter] ? Object.keys(bibleData[book][nextChapter]) : [];
+          setChapter(nextChapter);
+          setVerse(nextVerses[0]);
+        } else if (bIdx < books.length - 1) {
+          const nextBook = books[bIdx + 1];
+          const nextChapters = bibleData[nextBook] ? Object.keys(bibleData[nextBook]) : [];
+          const firstChapter = nextChapters[0];
+          const firstVerses = bibleData[nextBook][firstChapter] ? Object.keys(bibleData[nextBook][firstChapter]) : [];
+          setBook(nextBook);
+          setChapter(firstChapter);
+          setVerse(firstVerses[0]);
+        }
+      }
+    };
 
-const colorOptions = [
-  { name: "Black", value: "#1f2937" },
-  { name: "White", value: "#ffffff" },
-  // Blue: Tailwind blue-600, vibrant and readable
-  { name: "Blue", value: "#2563eb" },
-  // Purple: Tailwind violet-600, rich and modern
-  { name: "Purple", value: "#7c3aed" },
-  // Green: Tailwind emerald-600, modern and readable
-  { name: "Green", value: "#059669" },
-  // Red: Tailwind rose-600, softer and more elegant than pure red
-  { name: "Red", value: "#e11d48" },
-]
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [showFull, bibleData, book, chapter, verse, books, chapters, verses]);
 
-const backgroundOptions = [
-  { name: "White", value: "#f3f4f6" },
-  { name: "Black", value: "#000000" },
-  { name: "Brown", value: "#271608" },
-  { name: "Light Pink", value: "#fff3fd" },
-  { name: "Light Purple", value: "#faf5ff" },
-  { name: "Light Green", value: "#f0fdf4" },
-]
+  const colorOptions = [
+    { name: "Black", value: "#1f2937" },
+    { name: "White", value: "#ffffff" },
+    // Blue: Tailwind blue-600, vibrant and readable
+    { name: "Blue", value: "#2563eb" },
+    // Purple: Tailwind violet-600, rich and modern
+    { name: "Purple", value: "#7c3aed" },
+    // Green: Tailwind emerald-600, modern and readable
+    { name: "Green", value: "#059669" },
+    // Red: Tailwind rose-600, softer and more elegant than pure red
+    { name: "Red", value: "#e11d48" },
+  ]
+
+  const backgroundOptions = [
+    { name: "White", value: "#f3f4f6" },
+    { name: "Black", value: "#000000" },
+    { name: "Brown", value: "#271608" },
+    { name: "Light Pink", value: "#fff3fd" },
+    { name: "Light Purple", value: "#faf5ff" },
+    { name: "Light Green", value: "#f0fdf4" },
+  ]
 
   return (
     <div className="min-h-screen" style={{ backgroundColor }}>
