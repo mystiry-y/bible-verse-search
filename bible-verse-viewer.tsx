@@ -262,7 +262,27 @@ export default function Component() {
         {/* Translation Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" style={{ color: textColor }} className="hover:text-gray-800">
+            <Button 
+              variant="ghost" 
+              style={{ color: textColor }} 
+              className="hover:bg-transparent"
+              onMouseEnter={(e) => {
+                // Background hover logic
+                if (backgroundColor === '#f3f4f6') {
+                  e.currentTarget.style.backgroundColor = '#e5e7eb'; // gray for white background
+                } else {
+                  e.currentTarget.style.backgroundColor = backgroundColor === '#000000' ? '#333333' : '#f3f4f6';
+                }
+                // Text hover logic - white text stays white
+                if (textColor !== '#ffffff') {
+                  e.currentTarget.style.color = '#374151'; // gray-700 for other colors
+                }
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.color = textColor; // restore original text color
+              }}
+            >
               {TRANSLATIONS.find(t => t.value === translation)?.label}
               <ChevronDown className="ml-1 h-4 w-4" />
             </Button>
@@ -282,7 +302,28 @@ export default function Component() {
 
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="ghost" size="icon" style={{ color: textColor }} className="hover:text-gray-800">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              style={{ color: textColor }} 
+              className="hover:bg-transparent"
+              onMouseEnter={(e) => {
+                // Background hover logic
+                if (backgroundColor === '#f3f4f6') {
+                  e.currentTarget.style.backgroundColor = '#e5e7eb'; // gray for white background
+                } else {
+                  e.currentTarget.style.backgroundColor = backgroundColor === '#000000' ? '#333333' : '#f3f4f6';
+                }
+                // Text hover logic - white text stays white
+                if (textColor !== '#ffffff') {
+                  e.currentTarget.style.color = '#374151'; // gray-700 for other colors
+                }
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.color = textColor; // restore original text color
+              }}
+            >
               <Settings className="h-5 w-5" />
             </Button>
           </DialogTrigger>
@@ -339,7 +380,23 @@ export default function Component() {
           variant="ghost"
           size="icon"
           style={{ color: textColor }}
-          className="hover:text-gray-800"
+          className="hover:bg-transparent"
+          onMouseEnter={(e) => {
+            // Background hover logic
+            if (backgroundColor === '#f3f4f6') {
+              e.currentTarget.style.backgroundColor = '#e5e7eb'; // gray for white background
+            } else {
+              e.currentTarget.style.backgroundColor = backgroundColor === '#000000' ? '#333333' : '#f3f4f6';
+            }
+            // Text hover logic - white text stays white
+            if (textColor !== '#ffffff') {
+              e.currentTarget.style.color = '#374151'; // gray-700 for other colors
+            }
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = 'transparent';
+            e.currentTarget.style.color = textColor; // restore original text color
+          }}
           onClick={() => {
             setPrevScreen('main');
             setShowHistory(true);
@@ -547,29 +604,43 @@ export default function Component() {
               }}>
                 {/* Books Grid */}
                 {navigationStep === 'books' && (
-                  <div className="grid grid-cols-2 gap-4 max-h-[70vh] overflow-y-auto">
+                  <div className="grid grid-cols-2 gap-0 max-h-[70vh] overflow-y-auto">
                     {books.map((bookName) => (
                       <button
                         key={bookName}
-                        className="p-4 text-left focus:outline-none rounded transition border"
+                        className="p-2 text-center focus:outline-none transition border"
                         style={{ 
                           color: textColor, 
                           fontWeight: 500, 
-                          fontSize: 18, 
+                          fontSize: 14, 
                           background: 'transparent',
                           borderColor: backgroundColor === '#000000' ? '#444' : '#e5e7eb'
                         }}
                         onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = backgroundColor === '#000000' ? '#333' : '#f3f4f6';
+                          // Background hover logic
+                          if (backgroundColor === '#f3f4f6') {
+                            e.currentTarget.style.backgroundColor = '#e5e7eb'; // gray for white background
+                          } else {
+                            e.currentTarget.style.backgroundColor = backgroundColor === '#000000' ? '#333' : '#f3f4f6';
+                          }
+                          // Text hover logic - white text stays white
                         }}
                         onMouseLeave={(e) => {
                           e.currentTarget.style.backgroundColor = 'transparent';
+                          e.currentTarget.style.color = textColor; // restore original text color
                         }}
                         onFocus={(e) => {
-                          e.currentTarget.style.backgroundColor = backgroundColor === '#000000' ? '#333' : '#f3f4f6';
+                          // Background hover logic
+                          if (backgroundColor === '#f3f4f6') {
+                            e.currentTarget.style.backgroundColor = '#e5e7eb'; // gray for white background
+                          } else {
+                            e.currentTarget.style.backgroundColor = backgroundColor === '#000000' ? '#333' : '#f3f4f6';
+                          }
+                          // Text hover logic - white text stays white
                         }}
                         onBlur={(e) => {
                           e.currentTarget.style.backgroundColor = 'transparent';
+                          e.currentTarget.style.color = textColor; // restore original text color
                         }}
                         onClick={() => {
                           setSelectedBook(bookName);
@@ -584,29 +655,43 @@ export default function Component() {
 
                 {/* Chapters Grid */}
                 {navigationStep === 'chapters' && selectedBook && (
-                  <div className="grid grid-cols-6 gap-3 max-h-[70vh] overflow-y-auto">
+                  <div className="grid grid-cols-6 gap-1 max-h-[70vh] overflow-y-auto">
                     {navigationChapters.map((chapterNum) => (
                       <button
                         key={chapterNum}
-                        className="p-3 text-center focus:outline-none rounded transition border"
+                        className="p-2 text-center focus:outline-none rounded transition border"
                         style={{ 
                           color: textColor, 
                           fontWeight: 500, 
-                          fontSize: 16, 
+                          fontSize: 14, 
                           background: 'transparent',
                           borderColor: backgroundColor === '#000000' ? '#444' : '#e5e7eb'
                         }}
                         onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = backgroundColor === '#000000' ? '#333' : '#f3f4f6';
+                          // Background hover logic
+                          if (backgroundColor === '#f3f4f6') {
+                            e.currentTarget.style.backgroundColor = '#e5e7eb'; // gray for white background
+                          } else {
+                            e.currentTarget.style.backgroundColor = backgroundColor === '#000000' ? '#333' : '#f3f4f6';
+                          }
+                          // Text hover logic - white text stays white
                         }}
                         onMouseLeave={(e) => {
                           e.currentTarget.style.backgroundColor = 'transparent';
+                          e.currentTarget.style.color = textColor; // restore original text color
                         }}
                         onFocus={(e) => {
-                          e.currentTarget.style.backgroundColor = backgroundColor === '#000000' ? '#333' : '#f3f4f6';
+                          // Background hover logic
+                          if (backgroundColor === '#f3f4f6') {
+                            e.currentTarget.style.backgroundColor = '#e5e7eb'; // gray for white background
+                          } else {
+                            e.currentTarget.style.backgroundColor = backgroundColor === '#000000' ? '#333' : '#f3f4f6';
+                          }
+                          // Text hover logic - white text stays white
                         }}
                         onBlur={(e) => {
                           e.currentTarget.style.backgroundColor = 'transparent';
+                          e.currentTarget.style.color = textColor; // restore original text color
                         }}
                         onClick={() => {
                           setSelectedChapter(chapterNum);
@@ -621,29 +706,43 @@ export default function Component() {
 
                 {/* Verses Grid */}
                 {navigationStep === 'verses' && selectedBook && selectedChapter && (
-                  <div className="grid grid-cols-6 gap-3 max-h-[70vh] overflow-y-auto">
+                  <div className="grid grid-cols-6 gap-1 max-h-[70vh] overflow-y-auto">
                     {navigationVerses.map((verseNum) => (
                       <button
                         key={verseNum}
-                        className="p-3 text-center focus:outline-none rounded transition border"
+                        className="p-2 text-center focus:outline-none rounded transition border"
                         style={{ 
                           color: textColor, 
                           fontWeight: 500, 
-                          fontSize: 16, 
+                          fontSize: 14, 
                           background: 'transparent',
                           borderColor: backgroundColor === '#000000' ? '#444' : '#e5e7eb'
                         }}
                         onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = backgroundColor === '#000000' ? '#333' : '#f3f4f6';
+                          // Background hover logic
+                          if (backgroundColor === '#f3f4f6') {
+                            e.currentTarget.style.backgroundColor = '#e5e7eb'; // gray for white background
+                          } else {
+                            e.currentTarget.style.backgroundColor = backgroundColor === '#000000' ? '#333' : '#f3f4f6';
+                          }
+                          // Text hover logic - white text stays white
                         }}
                         onMouseLeave={(e) => {
                           e.currentTarget.style.backgroundColor = 'transparent';
+                          e.currentTarget.style.color = textColor; // restore original text color
                         }}
                         onFocus={(e) => {
-                          e.currentTarget.style.backgroundColor = backgroundColor === '#000000' ? '#333' : '#f3f4f6';
+                          // Background hover logic
+                          if (backgroundColor === '#f3f4f6') {
+                            e.currentTarget.style.backgroundColor = '#e5e7eb'; // gray for white background
+                          } else {
+                            e.currentTarget.style.backgroundColor = backgroundColor === '#000000' ? '#333' : '#f3f4f6';
+                          }
+                          // Text hover logic - white text stays white
                         }}
                         onBlur={(e) => {
                           e.currentTarget.style.backgroundColor = 'transparent';
+                          e.currentTarget.style.color = textColor; // restore original text color
                         }}
                         onClick={() => {
                           setBook(selectedBook);
@@ -737,7 +836,28 @@ export default function Component() {
               <div className="flex flex-row items-center gap-2 ml-auto pr-0" style={{ pointerEvents: 'auto' }}>
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button variant="ghost" size="icon" style={{ color: textColor }} className="hover:text-gray-800">
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      style={{ color: textColor }} 
+                      className="hover:bg-transparent"
+                      onMouseEnter={(e) => {
+                        // Background hover logic
+                        if (backgroundColor === '#f3f4f6') {
+                          e.currentTarget.style.backgroundColor = '#e5e7eb'; // gray for white background
+                        } else {
+                          e.currentTarget.style.backgroundColor = backgroundColor === '#000000' ? '#333333' : '#f3f4f6';
+                        }
+                        // Text hover logic - white text stays white
+                        if (textColor !== '#ffffff') {
+                          e.currentTarget.style.color = '#374151'; // gray-700 for other colors
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                        e.currentTarget.style.color = textColor; // restore original text color
+                      }}
+                    >
                       <Settings className="h-5 w-5" />
                     </Button>
                   </DialogTrigger>
@@ -791,7 +911,23 @@ export default function Component() {
                   variant="ghost"
                   size="icon"
                   style={{ color: textColor }}
-                  className="hover:text-gray-800"
+                  className="hover:bg-transparent"
+                  onMouseEnter={(e) => {
+                    // Background hover logic
+                    if (backgroundColor === '#f3f4f6') {
+                      e.currentTarget.style.backgroundColor = '#e5e7eb'; // gray for white background
+                    } else {
+                      e.currentTarget.style.backgroundColor = backgroundColor === '#000000' ? '#333333' : '#f3f4f6';
+                    }
+                    // Text hover logic - white text stays white
+                    if (textColor !== '#ffffff') {
+                      e.currentTarget.style.color = '#374151'; // gray-700 for other colors
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                    e.currentTarget.style.color = textColor; // restore original text color
+                  }}
                   onClick={() => {
                     setPrevScreen('fullscreen');
                     setShowHistory(true);
