@@ -491,9 +491,6 @@ export default function Component() {
                         <div className="absolute top-0.5 left-1/2 transform -translate-x-1/2 w-2 h-0.5 bg-yellow-400 rounded-full"></div>
                       </div>
                     </div>
-                    {/* Book pages effect */}
-                    <div className="absolute -right-0.5 top-0.5 w-7 h-5 bg-gray-200 rounded-r-lg -z-10"></div>
-                    <div className="absolute -right-1 top-1 w-7 h-4 bg-gray-300 rounded-r-lg -z-20"></div>
                   </div>
                 </button>
               </div>
