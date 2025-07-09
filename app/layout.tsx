@@ -3,7 +3,7 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: 'Bible Verse Search',
-  description: 'Created by Dylan',
+  description: 'Created by fella',
   generator: 'v0.dev',
 }
 
