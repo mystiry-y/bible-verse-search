@@ -39,6 +39,12 @@ export default function Component() {
   // Track the previous screen so we can return to it after closing history
   const [prevScreen, setPrevScreen] = useState<'main' | 'fullscreen' | null>(null);
 
+  // Book navigation state
+  const [showBookNavigation, setShowBookNavigation] = useState(false);
+  const [navigationStep, setNavigationStep] = useState<'books' | 'chapters' | 'verses'>('books');
+  const [selectedBook, setSelectedBook] = useState<string>('');
+  const [selectedChapter, setSelectedChapter] = useState<string>('');
+
   // Load recent verses from localStorage on mount
   useEffect(() => {
     const stored = localStorage.getItem('recentVerses');
@@ -164,6 +170,10 @@ export default function Component() {
   const chapters = book && bibleData && bibleData[book] ? Object.keys(bibleData[book]) : [];
   const verses = book && chapter && bibleData && bibleData[book] && bibleData[book][chapter] ? Object.keys(bibleData[book][chapter]) : [];
   const verseText = book && chapter && verse && bibleData && bibleData[book] && bibleData[book][chapter] && bibleData[book][chapter][verse] ? bibleData[book][chapter][verse] : "";
+
+  // For navigation: chapters and verses based on selected book/chapter
+  const navigationChapters = selectedBook && bibleData && bibleData[selectedBook] ? Object.keys(bibleData[selectedBook]) : [];
+  const navigationVerses = selectedBook && selectedChapter && bibleData && bibleData[selectedBook] && bibleData[selectedBook][selectedChapter] ? Object.keys(bibleData[selectedBook][selectedChapter]) : [];
 
   // Keyboard navigation for verse view
   useEffect(() => {
@@ -382,14 +392,33 @@ export default function Component() {
                 handleVerseSearch(searchInput);
               }}
             >
-              <label className="font-semibold">Search for a verse</label>
-              <input
-                className="p-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
-                type="text"
-                placeholder="Type book name, chapter, and verse..."
-                value={searchInput}
-                onChange={e => setSearchInput(e.target.value)}
-              />
+              <label className="font-semibold" style={{ color: textColor }}>Search for a verse</label>
+              <div className="relative">
+                <input
+                  className="p-2 pr-12 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 w-full"
+                  type="text"
+                  placeholder="Type book name, chapter, and verse..."
+                  value={searchInput}
+                  onChange={e => setSearchInput(e.target.value)}
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => {
+                    setShowBookNavigation(true);
+                    setNavigationStep('books');
+                    setSelectedBook('');
+                    setSelectedChapter('');
+                    setPrevScreen('main');
+                  }}
+                  className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 hover:bg-gray-100"
+                  style={{ color: textColor === '#ffffff' ? '#000000' : textColor }}
+                  aria-label="Browse books"
+                >
+                  <BookOpen className="h-4 w-4" />
+                </Button>
+              </div>
               <Button type="submit" className="mt-2 w-fit">Go</Button>
             </form>
           </div>
@@ -450,6 +479,199 @@ export default function Component() {
               )}
             </div>
           </div>
+          {/* Footer - not affected by font size, minimal distance from bottom/right */}
+          <footer className="fixed bottom-1 right-1 z-50">
+            <p className="text-xs text-gray-500 opacity-80" style={{ fontSize: 12 }}>
+              Made with <span className="text-red-500">❤️</span> by Dylan
+            </p>
+          </footer>
+        </div>
+      )}
+
+      {/* Book Navigation Fullscreen Overlay */}
+      {showBookNavigation && (
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center min-h-screen w-full" style={{ background: backgroundColor, color: textColor }}>
+          {/* Top bar with navigation title and close button */}
+          <div className="flex items-center justify-between w-full px-6 py-4 border-b border-gray-200" style={{ background: backgroundColor }}>
+            <div className="flex items-center gap-4">
+              {navigationStep !== 'books' && (
+                <button
+                  className="text-gray-500 hover:text-gray-800 text-xl px-2 py-1 rounded focus:outline-none"
+                  onClick={() => {
+                    if (navigationStep === 'chapters') {
+                      setNavigationStep('books');
+                      setSelectedBook('');
+                    } else if (navigationStep === 'verses') {
+                      setNavigationStep('chapters');
+                      setSelectedChapter('');
+                    }
+                  }}
+                  aria-label="Go back"
+                  style={{ background: 'transparent' }}
+                >
+                  ←
+                </button>
+              )}
+              <span className="font-semibold text-2xl" style={{ color: textColor }}>
+                {navigationStep === 'books' && 'Select Book'}
+                {navigationStep === 'chapters' && `${selectedBook} - Select Chapter`}
+                {navigationStep === 'verses' && `${selectedBook} ${selectedChapter} - Select Verse`}
+              </span>
+            </div>
+            <button
+              className="text-gray-500 hover:text-gray-800 text-2xl px-3 py-1 rounded focus:outline-none"
+              onClick={() => {
+                setShowBookNavigation(false);
+                setNavigationStep('books');
+                setSelectedBook('');
+                setSelectedChapter('');
+                // Restore previous screen
+                if (prevScreen === 'fullscreen') {
+                  setShowFull(true);
+                }
+                setPrevScreen(null);
+              }}
+              aria-label="Close navigation"
+              style={{ background: 'transparent' }}
+            >
+              ✕
+            </button>
+          </div>
+          
+          <div className="flex-1 w-full overflow-auto" style={{ minHeight: 0 }}>
+            <div className="w-full max-w-6xl mx-auto py-8 px-6">
+              <div className="rounded-xl shadow-lg p-6 max-h-full overflow-auto" style={{ 
+                backgroundColor: backgroundColor === '#000000' ? '#1a1a1a' : backgroundColor === '#f3f4f6' ? '#ffffff' : `${backgroundColor}dd`,
+                border: `1px solid ${backgroundColor === '#000000' ? '#333' : '#e5e7eb'}`,
+                color: textColor
+              }}>
+                {/* Books Grid */}
+                {navigationStep === 'books' && (
+                  <div className="grid grid-cols-2 gap-4 max-h-[70vh] overflow-y-auto">
+                    {books.map((bookName) => (
+                      <button
+                        key={bookName}
+                        className="p-4 text-left focus:outline-none rounded transition border"
+                        style={{ 
+                          color: textColor, 
+                          fontWeight: 500, 
+                          fontSize: 18, 
+                          background: 'transparent',
+                          borderColor: backgroundColor === '#000000' ? '#444' : '#e5e7eb'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = backgroundColor === '#000000' ? '#333' : '#f3f4f6';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                        }}
+                        onFocus={(e) => {
+                          e.currentTarget.style.backgroundColor = backgroundColor === '#000000' ? '#333' : '#f3f4f6';
+                        }}
+                        onBlur={(e) => {
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                        }}
+                        onClick={() => {
+                          setSelectedBook(bookName);
+                          setNavigationStep('chapters');
+                        }}
+                      >
+                        {bookName}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {/* Chapters Grid */}
+                {navigationStep === 'chapters' && selectedBook && (
+                  <div className="grid grid-cols-6 gap-3 max-h-[70vh] overflow-y-auto">
+                    {navigationChapters.map((chapterNum) => (
+                      <button
+                        key={chapterNum}
+                        className="p-3 text-center focus:outline-none rounded transition border"
+                        style={{ 
+                          color: textColor, 
+                          fontWeight: 500, 
+                          fontSize: 16, 
+                          background: 'transparent',
+                          borderColor: backgroundColor === '#000000' ? '#444' : '#e5e7eb'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = backgroundColor === '#000000' ? '#333' : '#f3f4f6';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                        }}
+                        onFocus={(e) => {
+                          e.currentTarget.style.backgroundColor = backgroundColor === '#000000' ? '#333' : '#f3f4f6';
+                        }}
+                        onBlur={(e) => {
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                        }}
+                        onClick={() => {
+                          setSelectedChapter(chapterNum);
+                          setNavigationStep('verses');
+                        }}
+                      >
+                        {chapterNum}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {/* Verses Grid */}
+                {navigationStep === 'verses' && selectedBook && selectedChapter && (
+                  <div className="grid grid-cols-6 gap-3 max-h-[70vh] overflow-y-auto">
+                    {navigationVerses.map((verseNum) => (
+                      <button
+                        key={verseNum}
+                        className="p-3 text-center focus:outline-none rounded transition border"
+                        style={{ 
+                          color: textColor, 
+                          fontWeight: 500, 
+                          fontSize: 16, 
+                          background: 'transparent',
+                          borderColor: backgroundColor === '#000000' ? '#444' : '#e5e7eb'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = backgroundColor === '#000000' ? '#333' : '#f3f4f6';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                        }}
+                        onFocus={(e) => {
+                          e.currentTarget.style.backgroundColor = backgroundColor === '#000000' ? '#333' : '#f3f4f6';
+                        }}
+                        onBlur={(e) => {
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                        }}
+                        onClick={() => {
+                          setBook(selectedBook);
+                          setChapter(selectedChapter);
+                          setVerse(verseNum);
+                          
+                          // Add to recent verses
+                          const ref = `${selectedBook} ${selectedChapter}:${verseNum}`;
+                          setRecentVerses(prev => [ref, ...prev.filter(v => v !== ref)].slice(0, 20));
+                          
+                          // Close navigation and show verse
+                          setShowBookNavigation(false);
+                          setNavigationStep('books');
+                          setSelectedBook('');
+                          setSelectedChapter('');
+                          setShowFull(true);
+                          setPrevScreen(null);
+                        }}
+                      >
+                        {verseNum}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+          
           {/* Footer - not affected by font size, minimal distance from bottom/right */}
           <footer className="fixed bottom-1 right-1 z-50">
             <p className="text-xs text-gray-500 opacity-80" style={{ fontSize: 12 }}>
