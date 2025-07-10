@@ -1,0 +1,26 @@
+@font-face {
+    font-family: 'Cascadia Mono';
+    src: url('CascadiaMono-Italic.eot');
+    src: local('Cascadia Mono Italic'), local('CascadiaMono-Italic'),
+        url('CascadiaMono-Italic.eot?#iefix') format('embedded-opentype'),
+        url('CascadiaMono-Italic.woff2') format('woff2'),
+        url('CascadiaMono-Italic.woff') format('woff'),
+        url('CascadiaMono-Italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Cascadia Mono';
+    src: url('CascadiaMono-Regular.eot');
+    src: local('Cascadia Mono Regular'), local('CascadiaMono-Regular'),
+        url('CascadiaMono-Regular.eot?#iefix') format('embedded-opentype'),
+        url('CascadiaMono-Regular.woff2') format('woff2'),
+        url('CascadiaMono-Regular.woff') format('woff'),
+        url('CascadiaMono-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+

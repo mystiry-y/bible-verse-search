@@ -1,0 +1,96 @@
+@font-face {
+    font-family: 'Circe Slab C';
+    src: url('CirceSlabC-Black.eot');
+    src: local('Circe Slab C Black'), local('CirceSlabC-Black'),
+        url('CirceSlabC-Black.eot?#iefix') format('embedded-opentype'),
+        url('CirceSlabC-Black.woff2') format('woff2'),
+        url('CirceSlabC-Black.woff') format('woff'),
+        url('CirceSlabC-Black.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Circe Slab C';
+    src: url('CirceSlabC-Medium.eot');
+    src: local('Circe Slab C Medium'), local('CirceSlabC-Medium'),
+        url('CirceSlabC-Medium.eot?#iefix') format('embedded-opentype'),
+        url('CirceSlabC-Medium.woff2') format('woff2'),
+        url('CirceSlabC-Medium.woff') format('woff'),
+        url('CirceSlabC-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Circe Slab C';
+    src: url('CirceSlabC-Thin.eot');
+    src: local('Circe Slab C Thin'), local('CirceSlabC-Thin'),
+        url('CirceSlabC-Thin.eot?#iefix') format('embedded-opentype'),
+        url('CirceSlabC-Thin.woff2') format('woff2'),
+        url('CirceSlabC-Thin.woff') format('woff'),
+        url('CirceSlabC-Thin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Circe Slab C';
+    src: url('CirceSlabC-Light.eot');
+    src: local('Circe Slab C Light'), local('CirceSlabC-Light'),
+        url('CirceSlabC-Light.eot?#iefix') format('embedded-opentype'),
+        url('CirceSlabC-Light.woff2') format('woff2'),
+        url('CirceSlabC-Light.woff') format('woff'),
+        url('CirceSlabC-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Circe Slab C';
+    src: url('CirceSlabC-Regular.eot');
+    src: local('Circe Slab C'), local('CirceSlabC-Regular'),
+        url('CirceSlabC-Regular.eot?#iefix') format('embedded-opentype'),
+        url('CirceSlabC-Regular.woff2') format('woff2'),
+        url('CirceSlabC-Regular.woff') format('woff'),
+        url('CirceSlabC-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Circe Slab C';
+    src: url('CirceSlabC-UltraLight.eot');
+    src: local('Circe Slab C Ultra Light'), local('CirceSlabC-UltraLight'),
+        url('CirceSlabC-UltraLight.eot?#iefix') format('embedded-opentype'),
+        url('CirceSlabC-UltraLight.woff2') format('woff2'),
+        url('CirceSlabC-UltraLight.woff') format('woff'),
+        url('CirceSlabC-UltraLight.ttf') format('truetype');
+    font-weight: 200;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Circe Slab C';
+    src: url('CirceSlabC-ExtraLight.eot');
+    src: local('Circe Slab C Extra Light'), local('CirceSlabC-ExtraLight'),
+        url('CirceSlabC-ExtraLight.eot?#iefix') format('embedded-opentype'),
+        url('CirceSlabC-ExtraLight.woff2') format('woff2'),
+        url('CirceSlabC-ExtraLight.woff') format('woff'),
+        url('CirceSlabC-ExtraLight.ttf') format('truetype');
+    font-weight: 200;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Circe Slab C';
+    src: url('CirceSlabC-Bold.eot');
+    src: local('Circe Slab C Bold'), local('CirceSlabC-Bold'),
+        url('CirceSlabC-Bold.eot?#iefix') format('embedded-opentype'),
+        url('CirceSlabC-Bold.woff2') format('woff2'),
+        url('CirceSlabC-Bold.woff') format('woff'),
+        url('CirceSlabC-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+

@@ -2,6 +2,114 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Custom Font Declarations */
+@font-face {
+  font-family: 'Apoc Normal';
+  src: url('/fonts/Apoc Normal/Apoc Normal.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Cascadia Mono';
+  src: url('/fonts/CascadiaMono/CascadiaMono-Regular.woff2') format('woff2'),
+       url('/fonts/CascadiaMono/CascadiaMono-Regular.woff') format('woff'),
+       url('/fonts/CascadiaMono/CascadiaMono-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Cascadia Mono';
+  src: url('/fonts/CascadiaMono/CascadiaMono-Italic.woff2') format('woff2'),
+       url('/fonts/CascadiaMono/CascadiaMono-Italic.woff') format('woff'),
+       url('/fonts/CascadiaMono/CascadiaMono-Italic.ttf') format('truetype');
+  font-weight: normal;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Chunk Five';
+  src: url('/fonts/chunk-master/ChunkFive-Regular.otf') format('opentype'),
+       url('/fonts/chunk-master/ChunkFive-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Circe Slab';
+  src: url('/fonts/CirceSlabC/CirceSlabC-Regular.woff2') format('woff2'),
+       url('/fonts/CirceSlabC/CirceSlabC-Regular.woff') format('woff'),
+       url('/fonts/CirceSlabC/CirceSlabC-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'DIN Next Slab Pro';
+  src: url('/fonts/DINNextSlabPro/DINNextSlabPro-Regular.woff2') format('woff2'),
+       url('/fonts/DINNextSlabPro/DINNextSlabPro-Regular.woff') format('woff'),
+       url('/fonts/DINNextSlabPro/DINNextSlabPro-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Fanwood';
+  src: url('/fonts/fanwood-master/Fanwood.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'League Spartan';
+  src: url('/fonts/LeagueSpartan-2.220/static/WOFF2/LeagueSpartan-Regular.woff2') format('woff2'),
+       url('/fonts/LeagueSpartan-2.220/static/WOFF/LeagueSpartan-Regular.woff') format('woff'),
+       url('/fonts/LeagueSpartan-2.220/static/TTF/LeagueSpartan-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Maru Chaba';
+  src: url('/fonts/MaruChaba/MaruChaba.woff2') format('woff2'),
+       url('/fonts/MaruChaba/MaruChaba.woff') format('woff'),
+       url('/fonts/MaruChaba/MaruChaba.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Ougkeh';
+  src: url('/fonts/ougkeh-font/OugkehRegular-DYYrW.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Prociono';
+  src: url('/fonts/prociono-master/Prociono.otf') format('opentype'),
+       url('/fonts/prociono-master/Prociono.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Quicking';
+  src: url('/fonts/Quicking/QuickingRegular-gw5KY.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Tagesschrift';
+  src: url('/fonts/Tagesschrift/Tagesschrift-Regular.woff2') format('woff2'),
+       url('/fonts/Tagesschrift/Tagesschrift-Regular.woff') format('woff'),
+       url('/fonts/Tagesschrift/Tagesschrift-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 body {
   font-family: Arial, Helvetica, sans-serif;
 }

@@ -1,0 +1,13 @@
+@font-face {
+    font-family: 'Maru Chaba';
+    src: url('MaruChaba.eot');
+    src: local('Maru Chaba'), local('MaruChaba'),
+        url('MaruChaba.eot?#iefix') format('embedded-opentype'),
+        url('MaruChaba.woff2') format('woff2'),
+        url('MaruChaba.woff') format('woff'),
+        url('MaruChaba.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+

@@ -1,0 +1,13 @@
+@font-face {
+    font-family: 'Tagesschrift';
+    src: url('Tagesschrift-Regular.eot');
+    src: local('Tagesschrift Regular'), local('Tagesschrift-Regular'),
+        url('Tagesschrift-Regular.eot?#iefix') format('embedded-opentype'),
+        url('Tagesschrift-Regular.woff2') format('woff2'),
+        url('Tagesschrift-Regular.woff') format('woff'),
+        url('Tagesschrift-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+

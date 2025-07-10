@@ -1,0 +1,168 @@
+@font-face {
+    font-family: 'DIN Next Slab';
+    src: url('DINNextSlabPro-Regular.eot');
+    src: local('DIN Next Slab'), local('DINNextSlabPro-Regular'),
+        url('DINNextSlabPro-Regular.eot?#iefix') format('embedded-opentype'),
+        url('DINNextSlabPro-Regular.woff2') format('woff2'),
+        url('DINNextSlabPro-Regular.woff') format('woff'),
+        url('DINNextSlabPro-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'DIN Next Slab';
+    src: url('DINNextSlabPro-LightItalic.eot');
+    src: local('DIN Next Slab Light Italic'), local('DINNextSlabPro-LightItalic'),
+        url('DINNextSlabPro-LightItalic.eot?#iefix') format('embedded-opentype'),
+        url('DINNextSlabPro-LightItalic.woff2') format('woff2'),
+        url('DINNextSlabPro-LightItalic.woff') format('woff'),
+        url('DINNextSlabPro-LightItalic.ttf') format('truetype');
+    font-weight: 300;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'DIN Next Slab';
+    src: url('DINNextSlabPro-BlackItalic.eot');
+    src: local('DIN Next Slab Black Italic'), local('DINNextSlabPro-BlackItalic'),
+        url('DINNextSlabPro-BlackItalic.eot?#iefix') format('embedded-opentype'),
+        url('DINNextSlabPro-BlackItalic.woff2') format('woff2'),
+        url('DINNextSlabPro-BlackItalic.woff') format('woff'),
+        url('DINNextSlabPro-BlackItalic.ttf') format('truetype');
+    font-weight: 900;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'DIN Next Slab';
+    src: url('DINNextSlabPro-Bold.eot');
+    src: local('DIN Next Slab Bold'), local('DINNextSlabPro-Bold'),
+        url('DINNextSlabPro-Bold.eot?#iefix') format('embedded-opentype'),
+        url('DINNextSlabPro-Bold.woff2') format('woff2'),
+        url('DINNextSlabPro-Bold.woff') format('woff'),
+        url('DINNextSlabPro-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'DIN Next Slab';
+    src: url('DINNextSlabPro-Black.eot');
+    src: local('DIN Next Slab Black'), local('DINNextSlabPro-Black'),
+        url('DINNextSlabPro-Black.eot?#iefix') format('embedded-opentype'),
+        url('DINNextSlabPro-Black.woff2') format('woff2'),
+        url('DINNextSlabPro-Black.woff') format('woff'),
+        url('DINNextSlabPro-Black.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'DIN Next Slab';
+    src: url('DINNextSlabPro-Heavy.eot');
+    src: local('DIN Next Slab Heavy'), local('DINNextSlabPro-Heavy'),
+        url('DINNextSlabPro-Heavy.eot?#iefix') format('embedded-opentype'),
+        url('DINNextSlabPro-Heavy.woff2') format('woff2'),
+        url('DINNextSlabPro-Heavy.woff') format('woff'),
+        url('DINNextSlabPro-Heavy.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'DIN Next Slab Ultra';
+    src: url('DINNextSlabPro-UltLightIt.eot');
+    src: local('DIN Next Slab Ultra Light Italic'), local('DINNextSlabPro-UltLightIt'),
+        url('DINNextSlabPro-UltLightIt.eot?#iefix') format('embedded-opentype'),
+        url('DINNextSlabPro-UltLightIt.woff2') format('woff2'),
+        url('DINNextSlabPro-UltLightIt.woff') format('woff'),
+        url('DINNextSlabPro-UltLightIt.ttf') format('truetype');
+    font-weight: 300;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'DIN Next Slab';
+    src: url('DINNextSlabPro-Light.eot');
+    src: local('DIN Next Slab Light'), local('DINNextSlabPro-Light'),
+        url('DINNextSlabPro-Light.eot?#iefix') format('embedded-opentype'),
+        url('DINNextSlabPro-Light.woff2') format('woff2'),
+        url('DINNextSlabPro-Light.woff') format('woff'),
+        url('DINNextSlabPro-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'DIN Next Slab';
+    src: url('DINNextSlabPro-MediumIt.eot');
+    src: local('DIN Next Slab Medium Italic'), local('DINNextSlabPro-MediumIt'),
+        url('DINNextSlabPro-MediumIt.eot?#iefix') format('embedded-opentype'),
+        url('DINNextSlabPro-MediumIt.woff2') format('woff2'),
+        url('DINNextSlabPro-MediumIt.woff') format('woff'),
+        url('DINNextSlabPro-MediumIt.ttf') format('truetype');
+    font-weight: 500;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'DIN Next Slab';
+    src: url('DINNextSlabPro-HeavyItalic.eot');
+    src: local('DIN Next Slab Heavy Italic'), local('DINNextSlabPro-HeavyItalic'),
+        url('DINNextSlabPro-HeavyItalic.eot?#iefix') format('embedded-opentype'),
+        url('DINNextSlabPro-HeavyItalic.woff2') format('woff2'),
+        url('DINNextSlabPro-HeavyItalic.woff') format('woff'),
+        url('DINNextSlabPro-HeavyItalic.ttf') format('truetype');
+    font-weight: 900;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'DIN Next Slab';
+    src: url('DINNextSlabPro-Italic.eot');
+    src: local('DIN Next Slab Italic'), local('DINNextSlabPro-Italic'),
+        url('DINNextSlabPro-Italic.eot?#iefix') format('embedded-opentype'),
+        url('DINNextSlabPro-Italic.woff2') format('woff2'),
+        url('DINNextSlabPro-Italic.woff') format('woff'),
+        url('DINNextSlabPro-Italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'DIN Next Slab';
+    src: url('DINNextSlabPro-BoldItalic.eot');
+    src: local('DIN Next Slab Bold Italic'), local('DINNextSlabPro-BoldItalic'),
+        url('DINNextSlabPro-BoldItalic.eot?#iefix') format('embedded-opentype'),
+        url('DINNextSlabPro-BoldItalic.woff2') format('woff2'),
+        url('DINNextSlabPro-BoldItalic.woff') format('woff'),
+        url('DINNextSlabPro-BoldItalic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'DIN Next Slab Ultra';
+    src: url('DINNextSlabPro-UltraLight.eot');
+    src: local('DIN Next Slab Ultra Light'), local('DINNextSlabPro-UltraLight'),
+        url('DINNextSlabPro-UltraLight.eot?#iefix') format('embedded-opentype'),
+        url('DINNextSlabPro-UltraLight.woff2') format('woff2'),
+        url('DINNextSlabPro-UltraLight.woff') format('woff'),
+        url('DINNextSlabPro-UltraLight.ttf') format('truetype');
+    font-weight: 200;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'DIN Next Slab';
+    src: url('DINNextSlabPro-Medium.eot');
+    src: local('DIN Next Slab Medium'), local('DINNextSlabPro-Medium'),
+        url('DINNextSlabPro-Medium.eot?#iefix') format('embedded-opentype'),
+        url('DINNextSlabPro-Medium.woff2') format('woff2'),
+        url('DINNextSlabPro-Medium.woff') format('woff'),
+        url('DINNextSlabPro-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+}
+

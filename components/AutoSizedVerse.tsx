@@ -1,6 +1,6 @@
 import React, { useRef, useLayoutEffect, useState } from "react";
 
-export function AutoSizedVerse({ text, fontSize, color }: { text: string; fontSize: number; color: string }) {
+export function AutoSizedVerse({ text, fontSize, color, fontFamily }: { text: string; fontSize: number; color: string; fontFamily?: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const spanRef = useRef<HTMLSpanElement>(null);
   const [fitFontSize, setFitFontSize] = useState(fontSize);
@@ -43,6 +43,7 @@ export function AutoSizedVerse({ text, fontSize, color }: { text: string; fontSi
           fontSize: fitFontSize + "px",
           color: color || "#000",
           fontWeight: 900,
+          fontFamily: fontFamily || "Arial, Helvetica, sans-serif",
           display: "block",
           textAlign: "center",
           wordBreak: "break-word",

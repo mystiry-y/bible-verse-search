@@ -9,6 +9,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Checkbox } from "@/components/ui/checkbox"
 
 import { AutoSizedVerse } from "./components/AutoSizedVerse";
 
@@ -60,6 +62,8 @@ export default function Component() {
   const [textColor, setTextColor] = useState<string>('#1f2937');
   const [backgroundColor, setBackgroundColor] = useState<string>('#f3f4f6');
   const [fontSize, setFontSize] = useState<number[]>([72]);
+  const [fontFamily, setFontFamily] = useState<string>('Arial, Helvetica, sans-serif');
+  const [showCredit, setShowCredit] = useState<boolean>(true);
 
   // On mount, sync UI state from localStorage (client only, only once)
   useEffect(() => {
@@ -68,9 +72,23 @@ export default function Component() {
       const storedTextColor = localStorage.getItem('textColor');
       const storedBackgroundColor = localStorage.getItem('backgroundColor');
       const storedFontSize = localStorage.getItem('fontSize');
+      const storedFontFamily = localStorage.getItem('fontFamily');
+      const storedShowCredit = localStorage.getItem('showCredit');
       if (storedTextColor) setTextColor(storedTextColor);
       if (storedBackgroundColor) setBackgroundColor(storedBackgroundColor);
       if (storedFontSize && !isNaN(Number(storedFontSize))) setFontSize([parseInt(storedFontSize, 10)]);
+      if (storedShowCredit !== null) setShowCredit(storedShowCredit === 'true');
+      if (storedFontFamily) {
+        // Check if the stored font family is still available
+        const isValidFont = fontOptions.some(font => font.value === storedFontFamily);
+        if (isValidFont) {
+          setFontFamily(storedFontFamily);
+        } else {
+          // If the font is no longer available, reset to default
+          setFontFamily('Arial, Helvetica, sans-serif');
+          localStorage.setItem('fontFamily', 'Arial, Helvetica, sans-serif');
+        }
+      }
       didLoadSettings = true;
     }
   }, []);
@@ -85,6 +103,12 @@ export default function Component() {
   useEffect(() => {
     if (typeof window !== 'undefined') localStorage.setItem('fontSize', String(fontSize[0]));
   }, [fontSize]);
+  useEffect(() => {
+    if (typeof window !== 'undefined') localStorage.setItem('fontFamily', fontFamily);
+  }, [fontFamily]);
+  useEffect(() => {
+    if (typeof window !== 'undefined') localStorage.setItem('showCredit', String(showCredit));
+  }, [showCredit]);
 
   // Bible/verse state
   const [translation, setTranslation] = useState(TRANSLATIONS[0].value); // NASB1995 default
@@ -111,9 +135,9 @@ export default function Component() {
     const inputChapter = match[2];
     const inputVerse = match[3];
     // Fuzzy match book name
-    let bestBook = books[0];
+    let bestBook = orderedBooks[0];
     let minDist = levenshtein(inputBook.toLowerCase(), bestBook.toLowerCase());
-    for (const b of books) {
+    for (const b of orderedBooks) {
       const dist = levenshtein(inputBook.toLowerCase(), b.toLowerCase());
       if (dist < minDist) {
         minDist = dist;
@@ -171,6 +195,30 @@ export default function Component() {
   const verses = book && chapter && bibleData && bibleData[book] && bibleData[book][chapter] ? Object.keys(bibleData[book][chapter]) : [];
   const verseText = book && chapter && verse && bibleData && bibleData[book] && bibleData[book][chapter] && bibleData[book][chapter][verse] ? bibleData[book][chapter][verse] : "";
 
+  // Protestant book order for RVR1960 translation
+  const protestantBookOrder = [
+    // Old Testament
+    "Génesis", "Éxodo", "Levítico", "Números", "Deuteronomio",
+    "Josué", "Jueces", "Rut", "1 Samuel", "2 Samuel", "1 Reyes", "2 Reyes",
+    "1 Crónicas", "2 Crónicas", "Esdras", "Nehemías", "Ester",
+    "Job", "Salmos", "Proverbios", "Eclesiastés", "Cantares",
+    "Isaías", "Jeremías", "Lamentaciones", "Ezequiel", "Daniel",
+    "Oseas", "Joel", "Amós", "Abdías", "Jonás", "Miqueas",
+    "Nahúm", "Habacuc", "Sofonías", "Hageo", "Zacarías", "Malaquías",
+    // New Testament
+    "S. Mateo", "S. Marcos", "S. Lucas", "S.Juan",
+    "Hechos", "Romanos", "1 Corintios", "2 Corintios", "Gálatas",
+    "Efesios", "Filipenses", "Colosenses", "1 Tesalonicenses", "2 Tesalonicenses",
+    "1 Timoteo", "2 Timoteo", "Tito", "Filemón", "Hebreos",
+    "Santiago", "1 Pedro", "2 Pedro", "1 Juan", "2 Juan", "3 Juan",
+    "Judas", "Apocalipsis"
+  ];
+
+  // Order books according to Protestant order for RVR1960, alphabetical for others
+  const orderedBooks = translation === 'RVR1960' && bibleData ? 
+    protestantBookOrder.filter(book => bibleData[book]) : 
+    books;
+
   // For navigation: chapters and verses based on selected book/chapter
   const navigationChapters = selectedBook && bibleData && bibleData[selectedBook] ? Object.keys(bibleData[selectedBook]) : [];
   const navigationVerses = selectedBook && selectedChapter && bibleData && bibleData[selectedBook] && bibleData[selectedBook][selectedChapter] ? Object.keys(bibleData[selectedBook][selectedChapter]) : [];
@@ -186,7 +234,7 @@ export default function Component() {
         if (!bibleData || !book || !chapter || !verse) return;
         let vIdx = verses.indexOf(verse);
         let cIdx = chapters.indexOf(chapter);
-        let bIdx = books.indexOf(book);
+        let bIdx = orderedBooks.indexOf(book);
         if (vIdx > 0) {
           setVerse(verses[vIdx - 1]);
         } else if (cIdx > 0) {
@@ -195,7 +243,7 @@ export default function Component() {
           setChapter(prevChapter);
           setVerse(prevVerses[prevVerses.length - 1]);
         } else if (bIdx > 0) {
-          const prevBook = books[bIdx - 1];
+          const prevBook = orderedBooks[bIdx - 1];
           const prevChapters = bibleData[prevBook] ? Object.keys(bibleData[prevBook]) : [];
           const lastChapter = prevChapters[prevChapters.length - 1];
           const lastVerses = bibleData[prevBook][lastChapter] ? Object.keys(bibleData[prevBook][lastChapter]) : [];
@@ -209,7 +257,7 @@ export default function Component() {
         if (!bibleData || !book || !chapter || !verse) return;
         let vIdx = verses.indexOf(verse);
         let cIdx = chapters.indexOf(chapter);
-        let bIdx = books.indexOf(book);
+        let bIdx = orderedBooks.indexOf(book);
         if (vIdx < verses.length - 1) {
           setVerse(verses[vIdx + 1]);
         } else if (cIdx < chapters.length - 1) {
@@ -217,8 +265,8 @@ export default function Component() {
           const nextVerses = bibleData[book][nextChapter] ? Object.keys(bibleData[book][nextChapter]) : [];
           setChapter(nextChapter);
           setVerse(nextVerses[0]);
-        } else if (bIdx < books.length - 1) {
-          const nextBook = books[bIdx + 1];
+        } else if (bIdx < orderedBooks.length - 1) {
+          const nextBook = orderedBooks[bIdx + 1];
           const nextChapters = bibleData[nextBook] ? Object.keys(bibleData[nextBook]) : [];
           const firstChapter = nextChapters[0];
           const firstVerses = bibleData[nextBook][firstChapter] ? Object.keys(bibleData[nextBook][firstChapter]) : [];
@@ -231,7 +279,7 @@ export default function Component() {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [showFull, bibleData, book, chapter, verse, books, chapters, verses]);
+  }, [showFull, bibleData, book, chapter, verse, orderedBooks, chapters, verses]);
 
   const colorOptions = [
     { name: "Black", value: "#1f2937" },
@@ -255,6 +303,22 @@ export default function Component() {
     { name: "Light Green", value: "#f0fdf4" },
   ]
 
+  const fontOptions = [
+    { name: "Arial (Default)", value: "Arial, Helvetica, sans-serif" },
+    { name: "Apoc Normal", value: "'Apoc Normal', serif" },
+    { name: "Cascadia Mono", value: "'Cascadia Mono', monospace" },
+    { name: "Chunk Five", value: "'Chunk Five', serif" },
+    { name: "Circe Slab", value: "'Circe Slab', serif" },
+    { name: "DIN Next Slab Pro", value: "'DIN Next Slab Pro', serif" },
+    { name: "Fanwood", value: "'Fanwood', serif" },
+    { name: "League Spartan", value: "'League Spartan', sans-serif" },
+    { name: "Maru Chaba", value: "'Maru Chaba', serif" },
+    { name: "Ougkeh", value: "'Ougkeh', serif" },
+    { name: "Prociono", value: "'Prociono', serif" },
+    { name: "Quicking", value: "'Quicking', serif" },
+    { name: "Tagesschrift", value: "'Tagesschrift', serif" },
+  ]
+
   return (
     <div className="min-h-screen" style={{ backgroundColor }}>
       {/* Header */}
@@ -264,7 +328,7 @@ export default function Component() {
           <DropdownMenuTrigger asChild>
             <Button 
               variant="ghost" 
-              style={{ color: textColor }} 
+              style={{ color: textColor, fontFamily: fontFamily }} 
               className="hover:bg-transparent"
               onMouseEnter={(e) => {
                 // Background hover logic
@@ -293,6 +357,7 @@ export default function Component() {
                 key={t.value}
                 onClick={() => setTranslation(t.value)}
                 className={translation === t.value ? "bg-purple-100" : ""}
+                style={{ fontFamily: fontFamily }}
               >
                 {t.label}
               </DropdownMenuItem>
@@ -329,11 +394,11 @@ export default function Component() {
           </DialogTrigger>
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>Settings</DialogTitle>
+              <DialogTitle style={{ fontFamily: fontFamily }}>Settings</DialogTitle>
             </DialogHeader>
             <div className="space-y-6">
               <div>
-                <Label className="text-sm font-medium">Text Color</Label>
+                <Label className="text-sm font-medium" style={{ fontFamily: fontFamily }}>Text Color</Label>
                 <div className="grid grid-cols-3 gap-2 mt-2">
                   {colorOptions.map((color) => (
                     <Button
@@ -344,14 +409,14 @@ export default function Component() {
                       className="justify-start"
                     >
                       <div className="w-4 h-4 rounded-full mr-2" style={{ backgroundColor: color.value }} />
-                      {color.name}
+                      <span style={{ fontFamily: fontFamily }}>{color.name}</span>
                     </Button>
                   ))}
                 </div>
               </div>
 
               <div>
-                <Label className="text-sm font-medium">Background Color</Label>
+                <Label className="text-sm font-medium" style={{ fontFamily: fontFamily }}>Background Color</Label>
                 <div className="grid grid-cols-2 gap-2 mt-2">
                   {backgroundOptions.map((bg) => (
                     <Button
@@ -362,15 +427,36 @@ export default function Component() {
                       className="justify-start"
                     >
                       <div className="w-4 h-4 rounded-full mr-2 border" style={{ backgroundColor: bg.value }} />
-                      {bg.name}
+                      <span style={{ fontFamily: fontFamily }}>{bg.name}</span>
                     </Button>
                   ))}
                 </div>
               </div>
 
               <div>
-                <Label className="text-sm font-medium">Font Size: {fontSize[0]}px</Label>
+                <Label className="text-sm font-medium" style={{ fontFamily: fontFamily }}>Font Size: {fontSize[0]}px</Label>
                 <Slider value={fontSize} onValueChange={setFontSize} max={100} min={12} step={1} className="mt-2" />
+              </div>
+
+              <div>
+                <Label className="text-sm font-medium" style={{ fontFamily: fontFamily }}>Font Family</Label>
+                <Select value={fontFamily} onValueChange={setFontFamily}>
+                  <SelectTrigger className="mt-2" style={{ fontFamily: fontFamily }}>
+                    <SelectValue placeholder="Select font" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {fontOptions.map((font) => (
+                      <SelectItem key={font.value} value={font.value}>
+                        <span style={{ fontFamily: font.value }}>{font.name}</span>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox id="credit" checked={showCredit} onCheckedChange={(checked) => setShowCredit(checked === true)} />
+                <Label htmlFor="credit" className="text-sm font-medium" style={{ fontFamily: fontFamily }}>Credit</Label>
               </div>
             </div>
           </DialogContent>
@@ -434,7 +520,7 @@ export default function Component() {
         </div>
 
         {/* Title */}
-        <h1 className="text-3xl font-semibold mb-12" style={{ color: textColor, fontSize: `${fontSize[0] + 8}px` }}>
+        <h1 className="text-3xl font-semibold mb-12" style={{ color: textColor, fontSize: `${fontSize[0] + 8}px`, fontFamily: fontFamily }}>
           Bible Verse Viewer
         </h1>
 
@@ -449,7 +535,7 @@ export default function Component() {
                 handleVerseSearch(searchInput);
               }}
             >
-              <label className="font-semibold" style={{ color: textColor }}>Search for a verse</label>
+              <label className="font-semibold" style={{ color: textColor, fontFamily: fontFamily }}>Search for a verse</label>
               <div className="relative">
                 <input
                   className="p-2 pr-12 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 w-full"
@@ -457,6 +543,7 @@ export default function Component() {
                   placeholder="Type book name, chapter, and verse..."
                   value={searchInput}
                   onChange={e => setSearchInput(e.target.value)}
+                  style={{ fontFamily: fontFamily }}
                 />
                 <Button
                   type="button"
@@ -476,7 +563,19 @@ export default function Component() {
                   <BookOpen className="h-4 w-4" />
                 </Button>
               </div>
-              <Button type="submit" className="mt-2 w-fit">Go</Button>
+              <Button 
+                type="submit" 
+                className={`mt-2 w-fit ${textColor !== '#1f2937' || backgroundColor !== '#f3f4f6' ? 'border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:outline-none hover:bg-gray-50' : ''}`}
+                style={{ 
+                  fontFamily: fontFamily,
+                  ...(textColor !== '#1f2937' || backgroundColor !== '#f3f4f6' ? {
+                    backgroundColor: '#ffffff',
+                    color: '#374151'
+                  } : {})
+                }}
+              >
+                Go
+              </Button>
             </form>
           </div>
         </div>
@@ -486,7 +585,7 @@ export default function Component() {
         <div className="fixed inset-0 z-50 flex flex-col items-center justify-center min-h-screen w-full" style={{ background: backgroundColor, color: textColor }}>
           {/* Top bar with close button */}
           <div className="flex items-center justify-between w-full px-6 py-4 border-b border-gray-200" style={{ background: backgroundColor }}>
-            <span className="font-semibold text-2xl" style={{ color: textColor }}>Recent Verses</span>
+            <span className="font-semibold text-2xl" style={{ color: textColor, fontFamily: fontFamily }}>Recent Verses</span>
             <button
               className="text-gray-500 hover:text-gray-800 text-2xl px-3 py-1 rounded focus:outline-none"
               onClick={() => {
@@ -505,16 +604,16 @@ export default function Component() {
             </button>
           </div>
           <div className="flex-1 w-full flex flex-col items-center justify-center" style={{ minHeight: 0 }}>
-            <div className="w-full max-w-lg mx-auto mt-8 mb-8 bg-white/80 rounded-xl shadow-lg p-6" style={{ border: `1px solid ${backgroundColor === '#000000' ? '#333' : '#e5e7eb'}` }}>
+            <div className="w-full max-w-lg mx-auto mt-4 mb-4 bg-white/80 rounded-xl shadow-lg p-4 max-h-[80vh] overflow-y-auto" style={{ border: `1px solid ${backgroundColor === '#000000' ? '#333' : '#e5e7eb'}` }}>
               {recentVerses.length === 0 ? (
-                <div className="text-gray-400 text-center py-12">No recent verses</div>
+                <div className="text-gray-400 text-center py-12" style={{ fontFamily: fontFamily }}>No recent verses</div>
               ) : (
-                <ul className="divide-y divide-gray-200">
+                <ul>
                   {recentVerses.map((ref, i) => (
                     <li key={ref}>
                       <button
-                        className="w-full flex items-center justify-between px-4 py-4 hover:bg-purple-50 focus:bg-purple-100 focus:outline-none rounded transition"
-                        style={{ color: textColor, fontWeight: 500, fontSize: 20, background: 'transparent' }}
+                        className="w-full flex items-center justify-between px-4 py-3 hover:bg-purple-50 focus:bg-purple-100 focus:outline-none rounded transition"
+                        style={{ color: textColor, fontWeight: 500, fontSize: 20, background: 'transparent', fontFamily: fontFamily }}
                         onClick={() => {
                           const m = ref.match(/^(.*) (\d+):(\d+)$/);
                           if (!m) return;
@@ -528,7 +627,7 @@ export default function Component() {
                         }}
                       >
                         <span>{ref}</span>
-                        <span className="text-xs text-gray-400 ml-2">{i === 0 ? 'Most Recent' : ''}</span>
+                        <span className="text-xs text-gray-400 ml-2" style={{ fontFamily: fontFamily }}>{i === 0 ? 'Most Recent' : ''}</span>
                       </button>
                     </li>
                   ))}
@@ -537,11 +636,13 @@ export default function Component() {
             </div>
           </div>
           {/* Footer - not affected by font size, minimal distance from bottom/right */}
-          <footer className="fixed bottom-1 right-1 z-50">
-            <p className="text-xs text-gray-500 opacity-80" style={{ fontSize: 12 }}>
-              Made with <span className="text-red-500">❤️</span> by Dylan
-            </p>
-          </footer>
+          {showCredit && (
+            <footer className="fixed bottom-1 right-1 z-50">
+              <p className="text-xs text-gray-500 opacity-80" style={{ fontSize: 10 }}>
+                Made with <span className="text-red-500">❤️</span> by Dylan
+              </p>
+            </footer>
+          )}
         </div>
       )}
 
@@ -569,10 +670,10 @@ export default function Component() {
                   ←
                 </button>
               )}
-              <span className="font-semibold text-2xl" style={{ color: textColor }}>
+              <span className="font-semibold text-2xl" style={{ color: textColor, fontFamily: fontFamily }}>
                 {navigationStep === 'books' && 'Select Book'}
-                {navigationStep === 'chapters' && `${selectedBook} - Select Chapter`}
-                {navigationStep === 'verses' && `${selectedBook} ${selectedChapter} - Select Verse`}
+                {navigationStep === 'chapters' && `${selectedBook}`}
+                {navigationStep === 'verses' && `${selectedBook} ${selectedChapter}`}
               </span>
             </div>
             <button
@@ -605,7 +706,7 @@ export default function Component() {
                 {/* Books Grid */}
                 {navigationStep === 'books' && (
                   <div className="grid grid-cols-2 gap-0 max-h-[70vh] overflow-y-auto">
-                    {books.map((bookName) => (
+                    {orderedBooks.map((bookName) => (
                       <button
                         key={bookName}
                         className="p-2 text-center focus:outline-none transition border"
@@ -614,7 +715,8 @@ export default function Component() {
                           fontWeight: 500, 
                           fontSize: 14, 
                           background: 'transparent',
-                          borderColor: backgroundColor === '#000000' ? '#444' : '#e5e7eb'
+                          borderColor: backgroundColor === '#000000' ? '#444' : '#e5e7eb',
+                          fontFamily: fontFamily
                         }}
                         onMouseEnter={(e) => {
                           // Background hover logic
@@ -665,7 +767,8 @@ export default function Component() {
                           fontWeight: 500, 
                           fontSize: 14, 
                           background: 'transparent',
-                          borderColor: backgroundColor === '#000000' ? '#444' : '#e5e7eb'
+                          borderColor: backgroundColor === '#000000' ? '#444' : '#e5e7eb',
+                          fontFamily: fontFamily
                         }}
                         onMouseEnter={(e) => {
                           // Background hover logic
@@ -716,7 +819,8 @@ export default function Component() {
                           fontWeight: 500, 
                           fontSize: 14, 
                           background: 'transparent',
-                          borderColor: backgroundColor === '#000000' ? '#444' : '#e5e7eb'
+                          borderColor: backgroundColor === '#000000' ? '#444' : '#e5e7eb',
+                          fontFamily: fontFamily
                         }}
                         onMouseEnter={(e) => {
                           // Background hover logic
@@ -772,11 +876,13 @@ export default function Component() {
           </div>
           
           {/* Footer - not affected by font size, minimal distance from bottom/right */}
-          <footer className="fixed bottom-1 right-1 z-50">
-            <p className="text-xs text-gray-500 opacity-80" style={{ fontSize: 12 }}>
-              Made with <span className="text-red-500">❤️</span> by Dylan
-            </p>
-          </footer>
+          {showCredit && (
+            <footer className="fixed bottom-1 right-1 z-50">
+              <p className="text-xs text-gray-500 opacity-80" style={{ fontSize: 10}}>
+                Made with <span className="text-red-500">❤️</span> by Dylan
+              </p>
+            </footer>
+          )}
         </div>
       )}
 
@@ -827,6 +933,7 @@ export default function Component() {
                     overflowWrap: 'break-word',
                     lineHeight: 1.1,
                     padding: '0 1rem',
+                    fontFamily: fontFamily,
                   }}
                 >
                   {book} {chapter}:{verse}
@@ -863,11 +970,11 @@ export default function Component() {
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-md">
                     <DialogHeader>
-                      <DialogTitle>Settings</DialogTitle>
+                      <DialogTitle style={{ fontFamily: fontFamily }}>Settings</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-6">
                       <div>
-                        <Label className="text-sm font-medium">Text Color</Label>
+                        <Label className="text-sm font-medium" style={{ fontFamily: fontFamily }}>Text Color</Label>
                         <div className="grid grid-cols-3 gap-2 mt-2">
                           {colorOptions.map((color) => (
                             <Button
@@ -878,13 +985,13 @@ export default function Component() {
                               className="justify-start"
                             >
                               <div className="w-4 h-4 rounded-full mr-2" style={{ backgroundColor: color.value }} />
-                              {color.name}
+                              <span style={{ fontFamily: fontFamily }}>{color.name}</span>
                             </Button>
                           ))}
                         </div>
                       </div>
                       <div>
-                        <Label className="text-sm font-medium">Background Color</Label>
+                        <Label className="text-sm font-medium" style={{ fontFamily: fontFamily }}>Background Color</Label>
                         <div className="grid grid-cols-2 gap-2 mt-2">
                           {backgroundOptions.map((bg) => (
                             <Button
@@ -895,14 +1002,35 @@ export default function Component() {
                               className="justify-start"
                             >
                               <div className="w-4 h-4 rounded-full mr-2 border" style={{ backgroundColor: bg.value }} />
-                              {bg.name}
+                              <span style={{ fontFamily: fontFamily }}>{bg.name}</span>
                             </Button>
                           ))}
                         </div>
                       </div>
                       <div>
-                        <Label className="text-sm font-medium">Font Size: {fontSize[0]}px</Label>
+                        <Label className="text-sm font-medium" style={{ fontFamily: fontFamily }}>Font Size: {fontSize[0]}px</Label>
                         <Slider value={fontSize} onValueChange={setFontSize} max={100} min={12} step={1} className="mt-2" />
+                      </div>
+
+                      <div>
+                        <Label className="text-sm font-medium" style={{ fontFamily: fontFamily }}>Font Family</Label>
+                        <Select value={fontFamily} onValueChange={setFontFamily}>
+                          <SelectTrigger className="mt-2" style={{ fontFamily: fontFamily }}>
+                            <SelectValue placeholder="Select font" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {fontOptions.map((font) => (
+                              <SelectItem key={font.value} value={font.value}>
+                                <span style={{ fontFamily: font.value }}>{font.name}</span>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="flex items-center space-x-2">
+                        <Checkbox id="credit-fullscreen" checked={showCredit} onCheckedChange={(checked) => setShowCredit(checked === true)} />
+                        <Label htmlFor="credit-fullscreen" className="text-sm font-medium" style={{ fontFamily: fontFamily }}>Credit</Label>
                       </div>
                     </div>
                   </DialogContent>
@@ -952,15 +1080,18 @@ export default function Component() {
                 text={verseText}
                 fontSize={fontSize[0]}
                 color={textColor}
+                fontFamily={fontFamily}
               />
             </div>
             {/* Footer - not affected by font size, same margin as top bar */}
             {/* Footer - not affected by font size, minimal distance from bottom/right */}
-            <footer className="fixed bottom-1 right-1 z-50">
-              <p className="text-xs text-gray-500 opacity-80" style={{ fontSize: 12 }}>
-                Made with <span className="text-red-500">❤️</span> by Dylan
-              </p>
-            </footer>
+            {showCredit && (
+              <footer className="fixed bottom-1 right-1 z-50">
+                <p className="text-xs text-gray-500 opacity-80" style={{ fontSize: 10 }}>
+                  Made with <span className="text-red-500">❤️</span> by Dylan
+                </p>
+              </footer>
+            )}
 
             {/* Left Arrow - only show if not at first verse of chapter */}
             {verses.indexOf(verse) > 0 && (
@@ -972,7 +1103,7 @@ export default function Component() {
                   if (!bibleData || !book || !chapter || !verse) return;
                   let vIdx = verses.indexOf(verse);
                   let cIdx = chapters.indexOf(chapter);
-                  let bIdx = books.indexOf(book);
+                  let bIdx = orderedBooks.indexOf(book);
                   if (vIdx > 0) {
                     setVerse(verses[vIdx - 1]);
                   } else if (cIdx > 0) {
@@ -981,7 +1112,7 @@ export default function Component() {
                     setChapter(prevChapter);
                     setVerse(prevVerses[prevVerses.length - 1]);
                   } else if (bIdx > 0) {
-                    const prevBook = books[bIdx - 1];
+                    const prevBook = orderedBooks[bIdx - 1];
                     const prevChapters = bibleData[prevBook] ? Object.keys(bibleData[prevBook]) : [];
                     const lastChapter = prevChapters[prevChapters.length - 1];
                     const lastVerses = bibleData[prevBook][lastChapter] ? Object.keys(bibleData[prevBook][lastChapter]) : [];
@@ -1008,7 +1139,7 @@ export default function Component() {
                   if (!bibleData || !book || !chapter || !verse) return;
                   let vIdx = verses.indexOf(verse);
                   let cIdx = chapters.indexOf(chapter);
-                  let bIdx = books.indexOf(book);
+                  let bIdx = orderedBooks.indexOf(book);
                   if (vIdx < verses.length - 1) {
                     setVerse(verses[vIdx + 1]);
                   } else if (cIdx < chapters.length - 1) {
@@ -1016,8 +1147,8 @@ export default function Component() {
                     const nextVerses = bibleData[book][nextChapter] ? Object.keys(bibleData[book][nextChapter]) : [];
                     setChapter(nextChapter);
                     setVerse(nextVerses[0]);
-                  } else if (bIdx < books.length - 1) {
-                    const nextBook = books[bIdx + 1];
+                  } else if (bIdx < orderedBooks.length - 1) {
+                    const nextBook = orderedBooks[bIdx + 1];
                     const nextChapters = bibleData[nextBook] ? Object.keys(bibleData[nextBook]) : [];
                     const firstChapter = nextChapters[0];
                     const firstVerses = bibleData[nextBook][firstChapter] ? Object.keys(bibleData[nextBook][firstChapter]) : [];
@@ -1040,11 +1171,13 @@ export default function Component() {
 
       {/* Footer (main view) */}
       {/* Footer (main view) - minimal distance from bottom/right */}
-      <footer className="fixed bottom-1 right-1 z-40">
-        <p className="text-xs text-gray-500 opacity-80" style={{ fontSize: 12 }}>
-          Made with <span className="text-red-500">❤️</span> by Dylan
-        </p>
-      </footer>
+      {showCredit && (
+        <footer className="fixed bottom-1 right-1 z-40">
+          <p className="text-xs text-gray-500 opacity-80" style={{ fontSize: 10 }}>
+            Made with <span className="text-red-500">❤️</span> by Dylan
+          </p>
+        </footer>
+      )}
     </div>
   );
 }
