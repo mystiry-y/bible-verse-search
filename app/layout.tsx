@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Bible Verse Viewer',
-  description: 'Search and read Bible verses with multiple translations - Created by Dylan',
+  title: 'Bible Verse Search',
+  description: 'Created by Dylan',
   generator: 'v0.dev',
   icons: {
     icon: [
