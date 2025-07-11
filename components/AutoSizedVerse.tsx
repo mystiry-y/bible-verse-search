@@ -14,10 +14,13 @@ export function AutoSizedVerse({ text, fontSize, color, fontFamily }: { text: st
     // Reset font size to requested
     span.style.fontSize = currentFontSize + "px";
 
+    // Determine minimum font size based on container width (proxy for mobile/desktop)
+    const minFontSize = container.clientWidth < 768 ? 16 : 8;
+    
     // Shrink font size until it fits or hits minimum
     while (
       (span.scrollWidth > container.clientWidth || span.scrollHeight > container.clientHeight) &&
-      currentFontSize > 8
+      currentFontSize > minFontSize
     ) {
       currentFontSize -= 2;
       span.style.fontSize = currentFontSize + "px";

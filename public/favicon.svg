@@ -1,18 +1,18 @@
 <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Bible book background -->
-  <rect x="6" y="8" width="20" height="16" rx="2" fill="url(#gradient)" />
+  <!-- Bible book background - perfect square filling dimensions -->
+  <rect x="2" y="2" width="28" height="28" rx="6" fill="url(#gradient)" />
   
-  <!-- Light rays -->
-  <g transform="translate(16, 4)">
-    <rect x="-0.5" y="0" width="1" height="3" rx="0.5" fill="#fbbf24" transform="rotate(-12)" />
-    <rect x="-0.5" y="0" width="1" height="4" rx="0.5" fill="#fbbf24" />
-    <rect x="-0.5" y="0" width="1" height="3" rx="0.5" fill="#fbbf24" transform="rotate(12)" />
+  <!-- Light rays - made skinnier and matching main menu angles -->
+  <g transform="translate(16, 0)">
+    <rect x="-0.5" y="0" width="1" height="5" rx="0.5" fill="#fcd34d" transform="rotate(-12)" />
+    <rect x="-0.5" y="0" width="1" height="6" rx="0.5" fill="#fcd34d" />
+    <rect x="-0.5" y="0" width="1" height="5" rx="0.5" fill="#fcd34d" transform="rotate(12)" />
   </g>
   
-  <!-- Cross -->
+  <!-- Cross - made bigger and thicker -->
   <g transform="translate(16, 16)">
-    <rect x="-0.5" y="-4" width="1" height="8" rx="0.5" fill="#fbbf24" />
-    <rect x="-2.5" y="-0.5" width="5" height="1" rx="0.5" fill="#fbbf24" />
+    <rect x="-1" y="-8" width="2" height="16" rx="1" fill="#fcd34d" />
+    <rect x="-5" y="-3" width="10" height="2" rx="1" fill="#fcd34d" />
   </g>
   
   <defs>

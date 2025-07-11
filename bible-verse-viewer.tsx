@@ -322,7 +322,7 @@ export default function Component() {
   return (
     <div className="min-h-screen" style={{ backgroundColor }}>
       {/* Header */}
-      <header className="flex items-center justify-end p-4 gap-2">
+      <header className="flex items-center justify-end p-3 sm:p-4 gap-2">
         {/* Translation Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -494,38 +494,40 @@ export default function Component() {
       </header>
 
       {/* Main Content */}
-      <main className="flex flex-col items-center justify-center px-4 pt-16">
+      <main className="flex flex-col items-center justify-center px-4 sm:px-6 pt-8 sm:pt-16">
         {/* Bible Icon */}
-        <div className="relative mb-8">
-          <div className="w-24 h-20 bg-gradient-to-b from-purple-800 to-purple-900 rounded-lg shadow-lg relative">
+        <div className="relative mb-6 sm:mb-8">
+          <div className="w-28 h-24 bg-gradient-to-b from-purple-800 to-purple-900 rounded-2xl shadow-lg relative">
             {/* Light rays */}
             <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
               <div className="flex space-x-1">
-                <div className="w-1 h-4 bg-yellow-400 rounded-full transform -rotate-12"></div>
-                <div className="w-1 h-5 bg-yellow-400 rounded-full"></div>
-                <div className="w-1 h-4 bg-yellow-400 rounded-full transform rotate-12"></div>
+                <div className="w-1 h-4 bg-amber-300 rounded-full transform -rotate-12"></div>
+                <div className="w-1 h-5 bg-amber-300 rounded-full"></div>
+                <div className="w-1 h-4 bg-amber-300 rounded-full transform rotate-12"></div>
               </div>
             </div>
             {/* Cross */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="relative">
-                <div className="w-1 h-8 bg-yellow-400 rounded-full"></div>
-                <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-5 h-1 bg-yellow-400 rounded-full"></div>
+                {/* Vertical bar with shadow for depth */}
+                <div className="w-2 h-14 bg-gradient-to-r from-amber-200 via-amber-300 to-amber-400 rounded-lg shadow-sm"></div>
+                {/* Horizontal bar with shadow for depth - averaged length */}
+                <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-10 h-2 bg-gradient-to-b from-amber-200 via-amber-300 to-amber-400 rounded-lg shadow-sm"></div>
               </div>
             </div>
             {/* Book pages effect */}
-            <div className="absolute -right-1 top-1 w-24 h-18 bg-gray-200 rounded-r-lg -z-10"></div>
-            <div className="absolute -right-2 top-2 w-24 h-16 bg-gray-300 rounded-r-lg -z-20"></div>
+            <div className="absolute -right-1 top-1 w-28 h-22 bg-gray-200 rounded-r-2xl -z-10"></div>
+            <div className="absolute -right-2 top-2 w-28 h-20 bg-gray-300 rounded-r-2xl -z-20"></div>
           </div>
         </div>
 
         {/* Title */}
-        <h1 className="text-3xl font-semibold mb-12" style={{ color: textColor, fontSize: `${fontSize[0] + 8}px`, fontFamily: fontFamily }}>
+        <h1 className="text-3xl font-semibold mb-8 sm:mb-12 px-4 text-center" style={{ color: textColor, fontSize: `${Math.min(fontSize[0] + 8, 48)}px`, fontFamily: fontFamily, lineHeight: '1.2' }}>
           Bible Verse Viewer
         </h1>
 
         {/* Search Section */}
-        <div className="w-full max-w-md mb-8">
+        <div className="w-full max-w-md mb-6 sm:mb-8 px-2">
           <div className="relative">
             {/* Single Search Bar for Book Chapter:Verse */}
             <form
@@ -535,15 +537,18 @@ export default function Component() {
                 handleVerseSearch(searchInput);
               }}
             >
-              <label className="font-semibold" style={{ color: textColor, fontFamily: fontFamily }}>Search for a verse</label>
+              <label className="font-semibold text-sm sm:text-base" style={{ color: textColor, fontFamily: fontFamily }}>Search for a verse</label>
               <div className="relative">
                 <input
-                  className="p-2 pr-12 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 w-full"
+                  className="p-2 pr-12 rounded border border-gray-300 focus:outline-none focus:ring-2 w-full text-sm sm:text-base"
                   type="text"
                   placeholder="Type book name, chapter, and verse..."
                   value={searchInput}
                   onChange={e => setSearchInput(e.target.value)}
-                  style={{ fontFamily: fontFamily }}
+                  style={{ 
+                    fontFamily: fontFamily,
+                    '--tw-ring-color': textColor,
+                  } as React.CSSProperties & { '--tw-ring-color': string }}
                 />
                 <Button
                   type="button"
@@ -565,14 +570,14 @@ export default function Component() {
               </div>
               <Button 
                 type="submit" 
-                className={`mt-2 w-fit ${textColor !== '#1f2937' || backgroundColor !== '#f3f4f6' ? 'border border-gray-300 focus:ring-2 focus:ring-purple-500 focus:outline-none hover:bg-gray-50' : ''}`}
+                className="mt-2 w-fit text-sm border border-gray-300 focus:ring-2 focus:outline-none hover:bg-gray-50"
                 style={{ 
+                  color: textColor,
                   fontFamily: fontFamily,
-                  ...(textColor !== '#1f2937' || backgroundColor !== '#f3f4f6' ? {
-                    backgroundColor: '#ffffff',
-                    color: '#374151'
-                  } : {})
-                }}
+                  backgroundColor: '#ffffff',
+                  borderColor: '#d1d5db',
+                  '--tw-ring-color': textColor,
+                } as React.CSSProperties & { '--tw-ring-color': string }}
               >
                 Go
               </Button>
@@ -584,10 +589,10 @@ export default function Component() {
       {showHistory && (
         <div className="fixed inset-0 z-50 flex flex-col items-center justify-center min-h-screen w-full" style={{ background: backgroundColor, color: textColor }}>
           {/* Top bar with close button */}
-          <div className="flex items-center justify-between w-full px-6 py-4 border-b border-gray-200" style={{ background: backgroundColor }}>
-            <span className="font-semibold text-2xl" style={{ color: textColor, fontFamily: fontFamily }}>Recent Verses</span>
+          <div className="flex items-center justify-between w-full px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200" style={{ background: backgroundColor }}>
+            <span className="font-semibold text-lg sm:text-2xl" style={{ color: textColor, fontFamily: fontFamily }}>Recent Verses</span>
             <button
-              className="text-gray-500 hover:text-gray-800 text-2xl px-3 py-1 rounded focus:outline-none"
+              className="text-gray-500 hover:text-gray-800 text-xl sm:text-2xl px-2 sm:px-3 py-1 rounded focus:outline-none"
               onClick={() => {
                 setShowHistory(false);
                 // Restore previous screen
@@ -604,7 +609,7 @@ export default function Component() {
             </button>
           </div>
           <div className="flex-1 w-full flex flex-col items-center justify-center" style={{ minHeight: 0 }}>
-            <div className="w-full max-w-lg mx-auto mt-4 mb-4 bg-white/80 rounded-xl shadow-lg p-4 max-h-[80vh] overflow-y-auto" style={{ border: `1px solid ${backgroundColor === '#000000' ? '#333' : '#e5e7eb'}` }}>
+            <div className="w-full max-w-lg mx-auto mt-4 mb-4 bg-white/80 rounded-xl shadow-lg p-3 sm:p-4 max-h-[80vh] overflow-y-auto" style={{ border: `1px solid ${backgroundColor === '#000000' ? '#333' : '#e5e7eb'}` }}>
               {recentVerses.length === 0 ? (
                 <div className="text-gray-400 text-center py-12" style={{ fontFamily: fontFamily }}>No recent verses</div>
               ) : (
@@ -612,8 +617,8 @@ export default function Component() {
                   {recentVerses.map((ref, i) => (
                     <li key={ref}>
                       <button
-                        className="w-full flex items-center justify-between px-4 py-3 hover:bg-purple-50 focus:bg-purple-100 focus:outline-none rounded transition"
-                        style={{ color: textColor, fontWeight: 500, fontSize: 20, background: 'transparent', fontFamily: fontFamily }}
+                        className="w-full flex items-center justify-between px-3 sm:px-4 py-2 sm:py-3 hover:bg-purple-50 focus:bg-purple-100 focus:outline-none rounded transition"
+                        style={{ color: textColor, fontWeight: 500, fontSize: 16, background: 'transparent', fontFamily: fontFamily, minHeight: '44px' }}
                         onClick={() => {
                           const m = ref.match(/^(.*) (\d+):(\d+)$/);
                           if (!m) return;
@@ -650,11 +655,11 @@ export default function Component() {
       {showBookNavigation && (
         <div className="fixed inset-0 z-50 flex flex-col items-center justify-center min-h-screen w-full" style={{ background: backgroundColor, color: textColor }}>
           {/* Top bar with navigation title and close button */}
-          <div className="flex items-center justify-between w-full px-6 py-4 border-b border-gray-200" style={{ background: backgroundColor }}>
-            <div className="flex items-center gap-4">
+          <div className="flex items-center justify-between w-full px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200" style={{ background: backgroundColor }}>
+            <div className="flex items-center gap-2 sm:gap-4">
               {navigationStep !== 'books' && (
                 <button
-                  className="text-gray-500 hover:text-gray-800 text-xl px-2 py-1 rounded focus:outline-none"
+                  className="text-gray-500 hover:text-gray-800 text-lg sm:text-xl px-1 sm:px-2 py-1 rounded focus:outline-none"
                   onClick={() => {
                     if (navigationStep === 'chapters') {
                       setNavigationStep('books');
@@ -670,14 +675,14 @@ export default function Component() {
                   ←
                 </button>
               )}
-              <span className="font-semibold text-2xl" style={{ color: textColor, fontFamily: fontFamily }}>
+              <span className="font-semibold text-lg sm:text-2xl" style={{ color: textColor, fontFamily: fontFamily }}>
                 {navigationStep === 'books' && 'Select Book'}
                 {navigationStep === 'chapters' && `${selectedBook}`}
                 {navigationStep === 'verses' && `${selectedBook} ${selectedChapter}`}
               </span>
             </div>
             <button
-              className="text-gray-500 hover:text-gray-800 text-2xl px-3 py-1 rounded focus:outline-none"
+              className="text-gray-500 hover:text-gray-800 text-xl sm:text-2xl px-2 sm:px-3 py-1 rounded focus:outline-none"
               onClick={() => {
                 setShowBookNavigation(false);
                 setNavigationStep('books');
@@ -697,15 +702,15 @@ export default function Component() {
           </div>
           
           <div className="flex-1 w-full overflow-auto" style={{ minHeight: 0 }}>
-            <div className="w-full max-w-6xl mx-auto py-8 px-6">
-              <div className="rounded-xl shadow-lg p-6 max-h-full overflow-auto" style={{ 
+            <div className="w-full max-w-6xl mx-auto py-6 sm:py-8 px-4 sm:px-6">
+              <div className="rounded-xl shadow-lg p-4 sm:p-6 max-h-full overflow-auto" style={{ 
                 backgroundColor: backgroundColor === '#000000' ? '#1a1a1a' : backgroundColor === '#f3f4f6' ? '#ffffff' : `${backgroundColor}dd`,
                 border: `1px solid ${backgroundColor === '#000000' ? '#333' : '#e5e7eb'}`,
                 color: textColor
               }}>
                 {/* Books Grid */}
                 {navigationStep === 'books' && (
-                  <div className="grid grid-cols-2 gap-0 max-h-[70vh] overflow-y-auto">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-0 max-h-[70vh] overflow-y-auto">
                     {orderedBooks.map((bookName) => (
                       <button
                         key={bookName}
@@ -716,7 +721,8 @@ export default function Component() {
                           fontSize: 14, 
                           background: 'transparent',
                           borderColor: backgroundColor === '#000000' ? '#444' : '#e5e7eb',
-                          fontFamily: fontFamily
+                          fontFamily: fontFamily,
+                          minHeight: '48px'
                         }}
                         onMouseEnter={(e) => {
                           // Background hover logic
@@ -757,7 +763,7 @@ export default function Component() {
 
                 {/* Chapters Grid */}
                 {navigationStep === 'chapters' && selectedBook && (
-                  <div className="grid grid-cols-6 gap-1 max-h-[70vh] overflow-y-auto">
+                  <div className="grid grid-cols-4 sm:grid-cols-6 gap-1 max-h-[70vh] overflow-y-auto">
                     {navigationChapters.map((chapterNum) => (
                       <button
                         key={chapterNum}
@@ -809,7 +815,7 @@ export default function Component() {
 
                 {/* Verses Grid */}
                 {navigationStep === 'verses' && selectedBook && selectedChapter && (
-                  <div className="grid grid-cols-6 gap-1 max-h-[70vh] overflow-y-auto">
+                  <div className="grid grid-cols-4 sm:grid-cols-6 gap-1 max-h-[70vh] overflow-y-auto">
                     {navigationVerses.map((verseNum) => (
                       <button
                         key={verseNum}
@@ -902,20 +908,20 @@ export default function Component() {
                   onClick={() => setShowFull(false)}
                   style={{ border: 'none', padding: 0 }}
                 >
-                  <div className="w-7 h-7 bg-gradient-to-b from-purple-800 to-purple-900 rounded-lg shadow-lg relative flex items-center justify-center">
+                  <div className="w-6 h-6 bg-gradient-to-b from-purple-800 to-purple-900 rounded-lg shadow-lg relative flex items-center justify-center">
                     {/* Light rays */}
                     <div className="absolute -top-1 left-1/2 transform -translate-x-1/2">
                       <div className="flex space-x-0.5">
-                        <div className="w-0.5 h-2 bg-yellow-400 rounded-full transform -rotate-12"></div>
-                        <div className="w-0.5 h-2.5 bg-yellow-400 rounded-full"></div>
-                        <div className="w-0.5 h-2 bg-yellow-400 rounded-full transform rotate-12"></div>
+                        <div className="w-0.5 h-1.5 bg-amber-300 rounded-full transform -rotate-12"></div>
+                        <div className="w-0.5 h-2 bg-amber-300 rounded-full"></div>
+                        <div className="w-0.5 h-1.5 bg-amber-300 rounded-full transform rotate-12"></div>
                       </div>
                     </div>
                     {/* Cross */}
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="relative">
-                        <div className="w-0.5 h-3.5 bg-yellow-400 rounded-full mx-auto"></div>
-                        <div className="absolute top-0.5 left-1/2 transform -translate-x-1/2 w-2 h-0.5 bg-yellow-400 rounded-full"></div>
+                        <div className="w-0.5 h-4 bg-gradient-to-r from-amber-200 via-amber-300 to-amber-400 rounded-sm"></div>
+                        <div className="absolute top-1 left-1/2 transform -translate-x-1/2 w-2.5 h-0.5 bg-gradient-to-b from-amber-200 via-amber-300 to-amber-400 rounded-sm"></div>
                       </div>
                     </div>
                   </div>
@@ -924,15 +930,13 @@ export default function Component() {
               {/* Centered Verse Title (centered with respect to the icons) */}
               <div className="absolute left-0 right-0 top-0 flex items-center justify-center h-full pointer-events-none" style={{zIndex: 51}}>
                 <div
-                  className="font-bold text-center opacity-90"
+                  className="font-bold text-center opacity-90 px-4 text-lg sm:text-4xl"
                   style={{
-                    fontSize: 36,
                     maxWidth: '80vw',
                     whiteSpace: 'normal',
                     wordBreak: 'break-word',
                     overflowWrap: 'break-word',
                     lineHeight: 1.1,
-                    padding: '0 1rem',
                     fontFamily: fontFamily,
                   }}
                 >
@@ -1068,11 +1072,9 @@ export default function Component() {
               </div>
             </div>
             {/* Centered verse text in scrollable area, top bar/title always fixed */}
-            <div className="flex-1 min-h-0 w-full flex items-center justify-center" style={{
+            <div className="flex-1 min-h-0 w-full flex items-center justify-center px-4 sm:px-10" style={{
               paddingTop: '0px',
               paddingBottom: '30px',
-              paddingLeft: '40px',
-              paddingRight: '40px',
               boxSizing: 'border-box',
               overflow: 'hidden',
             }}>
@@ -1096,8 +1098,8 @@ export default function Component() {
             {/* Left Arrow - only show if not at first verse of chapter */}
             {verses.indexOf(verse) > 0 && (
               <button
-                className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center justify-center w-9 h-9 bg-transparent hover:bg-black/10 focus:outline-none"
-                style={{ color: textColor, border: "none", marginLeft: 6, borderRadius: '50%' }}
+                className="absolute left-2 sm:left-0 top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 bg-transparent hover:bg-black/10 focus:outline-none sm:ml-1.5"
+                style={{ color: textColor, border: "none", borderRadius: '50%' }}
                 onClick={() => {
                   // Move to previous verse
                   if (!bibleData || !book || !chapter || !verse) return;
@@ -1124,7 +1126,7 @@ export default function Component() {
                 aria-label="Previous Verse"
               >
                 {/* Sleek left arrow icon only */}
-                <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg width="24" height="24" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" className="sm:w-7 sm:h-7">
                   <polyline points="18,7 10,14 18,21" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
@@ -1132,8 +1134,8 @@ export default function Component() {
             {/* Right Arrow - only show if not at last verse of chapter */}
             {verses.indexOf(verse) < verses.length - 1 && (
               <button
-                className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center justify-center w-9 h-9 bg-transparent hover:bg-black/10 focus:outline-none"
-                style={{ color: textColor, border: "none", marginRight: 6, borderRadius: '50%' }}
+                className="absolute right-2 sm:right-0 top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 bg-transparent hover:bg-black/10 focus:outline-none sm:mr-1.5"
+                style={{ color: textColor, border: "none", borderRadius: '50%' }}
                 onClick={() => {
                   // Move to next verse
                   if (!bibleData || !book || !chapter || !verse) return;
@@ -1160,7 +1162,7 @@ export default function Component() {
                 aria-label="Next Verse"
               >
                 {/* Sleek right arrow icon only */}
-                <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg width="24" height="24" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" className="sm:w-7 sm:h-7">
                   <polyline points="10,7 18,14 10,21" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
