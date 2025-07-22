@@ -572,7 +572,7 @@ export default function Component() {
                 type="submit" 
                 className="mt-2 w-fit text-sm border border-gray-300 focus:ring-2 focus:outline-none hover:bg-gray-50"
                 style={{ 
-                  color: textColor,
+                  color: '#000000',
                   fontFamily: fontFamily,
                   backgroundColor: '#ffffff',
                   borderColor: '#d1d5db',
