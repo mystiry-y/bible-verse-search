@@ -1,11 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
+  // Best practice: Enable strict build checks for TypeScript and ESLint.
+  // Kept `unoptimized: true` as your package.json targets GitHub Pages.
   images: {
     unoptimized: true,
   },
